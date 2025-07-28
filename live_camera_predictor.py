@@ -1,7 +1,10 @@
+from collections import deque, Counter
 import cv2
 import joblib
 import numpy as np
 from feature_extraction import extract_hog_features
+from skimage.feature import hog
+
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
@@ -12,6 +15,7 @@ _, _, label_map = joblib.load("hog_dataset.pkl")
 inverse_label_map = {v: k for k, v in label_map.items()}
 
 cap = cv2.VideoCapture(0)
+label_buffer = deque(maxlen=15)  
 
 while True:
     ret, frame = cap.read()
@@ -39,7 +43,13 @@ while True:
 
         try:
             face_resized = cv2.resize(roi_gray, (256, 256))
-            hog_features, _ = extract_hog_features(face_resized, visualize=False)
+            hog_features = hog(face_resized,
+                   orientations=9,
+                   pixels_per_cell=(8, 8),
+                   cells_per_block=(2, 2),
+                   block_norm='L2-Hys',
+                   visualize=False,
+                   feature_vector=True)
             hog_features = hog_features.reshape(1, -1)
             prediction = model.predict(hog_features)[0]
             name = inverse_label_map.get(prediction, "Unknown")
