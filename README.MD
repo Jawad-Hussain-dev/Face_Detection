@@ -63,6 +63,14 @@ Use the GUI to predict an identity from:
 ```bash
 python gui_predict.py
 ```
+## Dataset Download
+
+Due to GitHub's file size limitations, the dataset is hosted on Google Drive.
+
+[Click here to download the dataset](https://drive.google.com/drive/folders/1h7YoNBXxNjurOaabIIKTlGhWXunH8bl9?usp=sharing)
+
+Once downloaded, extract it into the root folder of this project.
+
 
 Features:
 
